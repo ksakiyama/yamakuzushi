@@ -1,4 +1,4 @@
-DEBUG_MODE = 1
+DEBUG_MODE = 0
 W = 30
 H = 30
 
@@ -68,25 +68,9 @@ def core(cells, vals):
                     if DEBUG_MODE:
                         debug_ans.append([target, ans])
                     ans = []
-        
+
         # targetを更新
         vals = vals[1:]
-
-    # Before
-    # while True:
-    #     if len(vals) == 0:
-    #         break
-    #     target = vals[0]
-    #     ans = []
-    #     for y in range(0, H):
-    #         for x in range(0, W):
-    #             if cells[y][x] == target and cells[y][x] >= 0:
-    #                 ans, cells = search_reduce(ans, cells, target, x, y)
-    #                 final_ans.append(ans)
-    #                 if DEBUG_MODE:
-    #                     debug_ans.append([target, ans])
-    #                 ans = []
-    #     vals = vals[1:]
 
     return final_ans, cells
 
