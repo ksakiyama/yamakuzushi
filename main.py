@@ -18,6 +18,8 @@ def search_reduce(ans, cells, target, x, y, first=True):
     """
     Recursive
     """
+    org_target = target
+
     if cells[y][x] == target:
         cells[y][x] = cells[y][x] - 1  # 減らす
         ans.append(y)  # 解答を追加
@@ -25,6 +27,9 @@ def search_reduce(ans, cells, target, x, y, first=True):
         # 4方向を探索 D,L,T,R
         directions = [(0, 1), (-1, 0), (0, -1), (1, 0)]
         for d in directions:
+            target = org_target - 1
+            if target == 0:
+                continue
             dx = x + d[0]
             dy = y + d[1]
             # 境界線を超えない、かつ、目的の整数
@@ -50,7 +55,7 @@ def core(cells, vals):
         ans = []
         for y in range(0, H):
             for x in range(0, W):
-                if cells[y][x] == target:
+                if cells[y][x] == target and cells[y][x] >= 0:
                     ans, cells = search_reduce(ans, cells, target, x, y)
                     final_ans.append(ans)
                     ans = []
