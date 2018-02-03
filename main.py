@@ -1,8 +1,8 @@
 DEBUG_MODE = 1
 W = 30
 H = 30
-# global W
-# global H
+
+debug_ans = []
 
 
 def check_border(x, y):
@@ -21,8 +21,8 @@ def search_reduce(ans, cells, target, x, y, first=True):
     org_target = target
 
     if cells[y][x] == target:
-        cells[y][x] = cells[y][x] - 1  # 減らす
-        ans.append(y)  # 解答を追加
+        cells[y][x] = cells[y][x] - 1
+        ans.append(y)
         ans.append(x)
         # 4方向を探索 D,L,T,R
         directions = [(0, 1), (-1, 0), (0, -1), (1, 0)]
@@ -34,9 +34,6 @@ def search_reduce(ans, cells, target, x, y, first=True):
             dy = y + d[1]
             # 境界線を超えない、かつ、目的の整数
             if check_border(dx, dy) and cells[dy][dx] == target:
-                # cells[dy][dx] = cells[dy][dx] - 1
-                # ans.append(dy)
-                # ans.append(dx)
                 # TODO Recursive
                 ans, cells = search_reduce(ans, cells, target, dx, dy)
 
@@ -53,27 +50,54 @@ def core(cells, vals):
             break
         target = vals[0]
         ans = []
+        # まず中央
+        for y in range(5, 25):
+            for x in range(5, 25):
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce(ans, cells, target, x, y)
+                    final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
+                    ans = []
+        # 周辺
         for y in range(0, H):
             for x in range(0, W):
                 if cells[y][x] == target and cells[y][x] >= 0:
                     ans, cells = search_reduce(ans, cells, target, x, y)
                     final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
                     ans = []
+        
+        # targetを更新
         vals = vals[1:]
 
-        # if DEBUG_MODE:
-        #     print4cells(cells)
-        #     if vals[0] < 98:
-        #         break
+    # Before
+    # while True:
+    #     if len(vals) == 0:
+    #         break
+    #     target = vals[0]
+    #     ans = []
+    #     for y in range(0, H):
+    #         for x in range(0, W):
+    #             if cells[y][x] == target and cells[y][x] >= 0:
+    #                 ans, cells = search_reduce(ans, cells, target, x, y)
+    #                 final_ans.append(ans)
+    #                 if DEBUG_MODE:
+    #                     debug_ans.append([target, ans])
+    #                 ans = []
+    #     vals = vals[1:]
 
     return final_ans, cells
+
 
 def print4cells(cells):
     print("====" * 5)
     for row in cells:
-            for r in row:
-                print("{0:3d}".format(r), end=" ")
-            print("")
+        for r in row:
+            print("{0:3d}".format(r), end=" ")
+        print("")
+
 
 def main():
     lines = []
@@ -107,9 +131,10 @@ def main():
 
     if DEBUG_MODE:
         print4cells(cells)
-        # print(final_ans[:10])
-        for i, v in enumerate(final_ans):
-            print("{}:{}".format(i, v))
+        with open("debug.txt", "w") as f:
+            for i, v in enumerate(debug_ans):
+                print("{}:{}:{}".format(i, v[0], v[1]))
+                f.write("{}:{}:{}\n".format(i, v[0], v[1]))
         print("Te:{}".format(len(final_ans)))
     else:
         # Output
