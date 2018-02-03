@@ -1,7 +1,7 @@
 import copy
 import random
 
-DEBUG_MODE = 1
+DEBUG_MODE = 0
 W = 30
 H = 30
 
@@ -97,104 +97,39 @@ def core(cells):
     """
     final_ans = []
 
-    # # ----Greedy----------------------------------------------------
-    # # 探索
-    # rank_points = []
-    # vals = [i for i in range(100, 25, -1)]
-    # # 適当に100くらいやる
-    # for turn in range(0, 20):
-    #     for target in vals:
-    #         for y in range(5, 25):
-    #             for x in range(5, 25):
-    #                 if cells[y][x] == target and cells[y][x] >= 0:
-    #                     dummy_cells = copy.deepcopy(cells)
-    #                     cnt, _ = search_counter(dummy_cells, target, x, y)
-    #                     rank_points.append([cnt, target, (x, y)])
-
-    #     # 最も良いポイントは？
-    #     # print(rank_points)
-    #     ans = []
-    #     rank_points.sort(key=lambda x: x[0], reverse=True)
-    #     # 適当に10個くらいやったら探索する
-    #     for i in rank_points[:10]:
-    #         target = i[1]
-    #         x = i[2][0]
-    #         y = i[2][1]
-    #         if cells[y][x] == target and cells[y][x] >= 0:
-    #             ans, cells = search_reduce(ans, cells, target, x, y)
-    #             final_ans.append(ans)
-    #             ans = []
-
-    # ----ランダム----------------------------------------------------
-    vals = gene_rand_vals()
-    while True:
-        if len(vals) == 0:
-            break
-        target = vals[0]
-
-        # 1
-        for y in range(5, 15):
-            for x in range(5, 15):
-                if cells[y][x] == target and cells[y][x] >= 0:
-                    ans, cells = search_reduce([], cells, target, x, y)
-                    final_ans.append(ans)
-                    if DEBUG_MODE:
-                        debug_ans.append([target, ans])
-                    ans = []
-
-        # 2
-        for y in range(15, 25):
-            for x in range(15, 25):
-                if cells[y][x] == target and cells[y][x] >= 0:
-                    ans, cells = search_reduce([], cells, target, x, y)
-                    final_ans.append(ans)
-                    if DEBUG_MODE:
-                        debug_ans.append([target, ans])
-                    ans = []
-
-        # 3
-        for y in range(5, 15):
-            for x in range(15, 25):
-                if cells[y][x] == target and cells[y][x] >= 0:
-                    ans, cells = search_reduce([], cells, target, x, y)
-                    final_ans.append(ans)
-                    if DEBUG_MODE:
-                        debug_ans.append([target, ans])
-                    ans = []
-
-        # 4
-        for y in range(15, 25):
-            for x in range(5, 15):
-                if cells[y][x] == target and cells[y][x] >= 0:
-                    ans, cells = search_reduce([], cells, target, x, y)
-                    final_ans.append(ans)
-                    if DEBUG_MODE:
-                        debug_ans.append([target, ans])
-                    ans = []
-
-        # 周辺
-        for y in range(0, H):
-            for x in range(0, W):
-                if cells[y][x] == target and cells[y][x] >= 0:
-                    ans, cells = search_reduce([], cells, target, x, y)
-                    final_ans.append(ans)
-                    if DEBUG_MODE:
-                        debug_ans.append([target, ans])
-                    ans = []
-
-        # targetを更新
-        vals = vals[1:]
-
-    # ----ランダム----------------------------------------------------
+    # ----中央から探すアルゴリズム----------------------------------------------------
     vals = [i for i in range(100, 0, -1)]
     while True:
         if len(vals) == 0:
             break
         target = vals[0]
 
+        # ----Greedy----------------------------------------------------
+        # 探索
+        if target < 70 and target > 40:
+            rank_points = []
+            # 適当に100くらいやる
+            for y in range(0, H):
+                for x in range(0, W):
+                    if cells[y][x] == target and cells[y][x] >= 0:
+                        dummy_cells = copy.deepcopy(cells)
+                        cnt, _ = search_counter(dummy_cells, target, x, y)
+                        rank_points.append([cnt, target, (x, y)])
+
+            rank_points.sort(key=lambda x: x[0], reverse=True)
+            # 適当に2個くらいやったら探索する
+            for i in rank_points[:2]:
+                target = i[1]
+                x = i[2][0]
+                y = i[2][1]
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce([], cells, target, x, y)
+                    final_ans.append(ans)
+                    ans = []
+
         # 1
-        for y in range(5, 15):
-            for x in range(5, 15):
+        for y in range(12, 18):
+            for x in range(12, 18):
                 if cells[y][x] == target and cells[y][x] >= 0:
                     ans, cells = search_reduce([], cells, target, x, y)
                     final_ans.append(ans)
@@ -203,8 +138,8 @@ def core(cells):
                     ans = []
 
         # 2
-        for y in range(15, 25):
-            for x in range(15, 25):
+        for y in range(6, 12):
+            for x in range(6, 12):
                 if cells[y][x] == target and cells[y][x] >= 0:
                     ans, cells = search_reduce([], cells, target, x, y)
                     final_ans.append(ans)
@@ -213,8 +148,8 @@ def core(cells):
                     ans = []
 
         # 3
-        for y in range(5, 15):
-            for x in range(15, 25):
+        for y in range(18, 24):
+            for x in range(18, 24):
                 if cells[y][x] == target and cells[y][x] >= 0:
                     ans, cells = search_reduce([], cells, target, x, y)
                     final_ans.append(ans)
@@ -223,8 +158,58 @@ def core(cells):
                     ans = []
 
         # 4
-        for y in range(15, 25):
-            for x in range(5, 15):
+        for y in range(18, 24):
+            for x in range(6, 12):
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce([], cells, target, x, y)
+                    final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
+                    ans = []
+
+        # 5
+        for y in range(6, 12):
+            for x in range(18, 24):
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce([], cells, target, x, y)
+                    final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
+                    ans = []
+
+        # 6
+        for y in range(12, 18):
+            for x in range(6, 12):
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce([], cells, target, x, y)
+                    final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
+                    ans = []
+
+        # 7
+        for y in range(6, 12):
+            for x in range(12, 18):
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce([], cells, target, x, y)
+                    final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
+                    ans = []
+
+        # 8
+        for y in range(12, 18):
+            for x in range(18, 24):
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce([], cells, target, x, y)
+                    final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
+                    ans = []
+        
+        # 9
+        for y in range(18, 24):
+            for x in range(12, 18):
                 if cells[y][x] == target and cells[y][x] >= 0:
                     ans, cells = search_reduce([], cells, target, x, y)
                     final_ans.append(ans)
@@ -302,18 +287,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-"""
-[
-100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 
-90, 89, 88, 87, 86, 85, 84, 83, 82, 81, 
-80, 79, 78, 77, 76, 75, 74, 73, 72, 71, 
-70, 69, 68, 67, 66, 65, 64, 63, 62, 61, 
-60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 
-50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 
-40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 
-30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 
-20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 
-10, 9, 8, 7, 6, 5, 4, 3, 2, 1
-]
-"""
