@@ -1,5 +1,7 @@
 import copy
-DEBUG_MODE = 0
+import random
+
+DEBUG_MODE = 1
 W = 30
 H = 30
 
@@ -71,62 +73,170 @@ def search_reduce(ans, cells, target, x, y):
     return ans, cells
 
 
+def gene_rand_vals():
+    v9 = [i for i in range(81, 101)]
+    # v8 = [i for i in range(81, 91)]
+    v7 = [i for i in range(61, 81)]
+    # v6 = [i for i in range(61, 71)]
+    v5 = [i for i in range(41, 61)]
+    random.shuffle(v9)
+    # random.shuffle(v8)
+    random.shuffle(v7)
+    # random.shuffle(v6)
+    random.shuffle(v5)
+    remain = [i for i in range(1, 41)]
+    remain.sort(reverse=True)
+    ret = v9 + v7 + v5 + remain
+    print(ret)
+    return ret
+
+
 def core(cells):
     """
     Main Algorithm
     """
     final_ans = []
 
-    # ----Greedy----------------------------------------------------
-    # 探索
-    rank_points = []
-    vals = [i for i in range(100, 25, -1)]
-    # 適当に100くらいやる
-    for turn in range(0, 20):
-        for target in vals:
-            for y in range(5, 25):
-                for x in range(5, 25):
-                    if cells[y][x] == target and cells[y][x] >= 0:
-                        dummy_cells = copy.deepcopy(cells)
-                        cnt, _ = search_counter(dummy_cells, target, x, y)
-                        rank_points.append([cnt, target, (x, y)])
+    # # ----Greedy----------------------------------------------------
+    # # 探索
+    # rank_points = []
+    # vals = [i for i in range(100, 25, -1)]
+    # # 適当に100くらいやる
+    # for turn in range(0, 20):
+    #     for target in vals:
+    #         for y in range(5, 25):
+    #             for x in range(5, 25):
+    #                 if cells[y][x] == target and cells[y][x] >= 0:
+    #                     dummy_cells = copy.deepcopy(cells)
+    #                     cnt, _ = search_counter(dummy_cells, target, x, y)
+    #                     rank_points.append([cnt, target, (x, y)])
 
-        # 最も良いポイントは？
-        # print(rank_points)
-        ans = []
-        rank_points.sort(key=lambda x: x[0], reverse=True)
-        # 適当に10個くらいやったら探索する
-        for i in rank_points[:10]:
-            target = i[1]
-            x = i[2][0]
-            y = i[2][1]
-            if cells[y][x] == target and cells[y][x] >= 0:
-                ans, cells = search_reduce(ans, cells, target, x, y)
-                final_ans.append(ans)
-                ans = []
+    #     # 最も良いポイントは？
+    #     # print(rank_points)
+    #     ans = []
+    #     rank_points.sort(key=lambda x: x[0], reverse=True)
+    #     # 適当に10個くらいやったら探索する
+    #     for i in rank_points[:10]:
+    #         target = i[1]
+    #         x = i[2][0]
+    #         y = i[2][1]
+    #         if cells[y][x] == target and cells[y][x] >= 0:
+    #             ans, cells = search_reduce(ans, cells, target, x, y)
+    #             final_ans.append(ans)
+    #             ans = []
 
-    # ----後始末----------------------------------------------------
+    # ----ランダム----------------------------------------------------
+    vals = gene_rand_vals()
+    while True:
+        if len(vals) == 0:
+            break
+        target = vals[0]
+
+        # 1
+        for y in range(5, 15):
+            for x in range(5, 15):
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce([], cells, target, x, y)
+                    final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
+                    ans = []
+
+        # 2
+        for y in range(15, 25):
+            for x in range(15, 25):
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce([], cells, target, x, y)
+                    final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
+                    ans = []
+
+        # 3
+        for y in range(5, 15):
+            for x in range(15, 25):
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce([], cells, target, x, y)
+                    final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
+                    ans = []
+
+        # 4
+        for y in range(15, 25):
+            for x in range(5, 15):
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce([], cells, target, x, y)
+                    final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
+                    ans = []
+
+        # 周辺
+        for y in range(0, H):
+            for x in range(0, W):
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce([], cells, target, x, y)
+                    final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
+                    ans = []
+
+        # targetを更新
+        vals = vals[1:]
+
+    # ----ランダム----------------------------------------------------
     vals = [i for i in range(100, 0, -1)]
     while True:
         if len(vals) == 0:
             break
         target = vals[0]
-        ans = []
 
-        # まず中央
-        for y in range(5, 25):
-            for x in range(5, 25):
+        # 1
+        for y in range(5, 15):
+            for x in range(5, 15):
                 if cells[y][x] == target and cells[y][x] >= 0:
-                    ans, cells = search_reduce(ans, cells, target, x, y)
+                    ans, cells = search_reduce([], cells, target, x, y)
                     final_ans.append(ans)
                     if DEBUG_MODE:
                         debug_ans.append([target, ans])
                     ans = []
+
+        # 2
+        for y in range(15, 25):
+            for x in range(15, 25):
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce([], cells, target, x, y)
+                    final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
+                    ans = []
+
+        # 3
+        for y in range(5, 15):
+            for x in range(15, 25):
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce([], cells, target, x, y)
+                    final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
+                    ans = []
+
+        # 4
+        for y in range(15, 25):
+            for x in range(5, 15):
+                if cells[y][x] == target and cells[y][x] >= 0:
+                    ans, cells = search_reduce([], cells, target, x, y)
+                    final_ans.append(ans)
+                    if DEBUG_MODE:
+                        debug_ans.append([target, ans])
+                    ans = []
+
         # 周辺
         for y in range(0, H):
             for x in range(0, W):
                 if cells[y][x] == target and cells[y][x] >= 0:
-                    ans, cells = search_reduce(ans, cells, target, x, y)
+                    ans, cells = search_reduce([], cells, target, x, y)
                     final_ans.append(ans)
                     if DEBUG_MODE:
                         debug_ans.append([target, ans])
@@ -166,17 +276,14 @@ def main():
             vals.append(int(x))
         cells.append(tmp)
 
-    # vals = list(set(vals))
-    # vals.sort(reverse=True)
-
-    if DEBUG_MODE:
-        print4cells(cells)
+    # if DEBUG_MODE:
+    #     print4cells(cells)
 
     # Let's go!
     final_ans, cells = core(cells)
 
     if DEBUG_MODE:
-        print4cells(cells)
+        # print4cells(cells)
         # with open("debug.txt", "w") as f:
         #     for i, v in enumerate(debug_ans):
         #         print("{}:{}:{}".format(i, v[0], v[1]))
@@ -198,9 +305,6 @@ if __name__ == "__main__":
 
 """
 [
-    50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 
-40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 
-30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 
 100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 
 90, 89, 88, 87, 86, 85, 84, 83, 82, 81, 
 80, 79, 78, 77, 76, 75, 74, 73, 72, 71, 
