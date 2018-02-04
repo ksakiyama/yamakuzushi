@@ -1,5 +1,4 @@
-DEBUG_MODE = 1
-debug_ans = []
+DEBUG_MODE = 0
 
 
 def exit():
@@ -16,47 +15,12 @@ class Solver():
         self.final_ans = []
 
     def run(self):
-        target = self.search_top()
-        while target is not None:
-            x = target[0]
-            y = target[1]
-
-            ans = self.reduce_cell([], x, y)
-            self.final_ans.append(ans)
-
-            # 更新
-            target = self.search_top()
-
-    def reduce_cell(self, ans, x, y):
-        """
-        再帰関数
-        """
-        org_v = self.cells[y][x]
-
-        self.cells[y][x] = self.cells[y][x] - 1
-        ans.append(y)
-        ans.append(x)
-
-        for d in self.directions:
-            v = org_v - 1
-            if v == 0:
-                continue
-            dx = x + d[0]
-            dy = y + d[1]
-            # 境界チェック、かつ、値のチェック
-            if self.check_border(dx, dy) and self.cells[dy][dx] == v:
-                ans = self.reduce_cell(ans, dx, dy)
-            return ans
-        return ans
-
-    def run2(self):
         p = self.search_top()
         while p is not None:
             while True:
                 x = p[0]
                 y = p[1]
                 self.final_ans.append([y, x])
-                # self.final_ans.append(x)
                 self.cells[y][x] = self.cells[y][x] - 1
 
                 next_p = None
@@ -141,23 +105,19 @@ def main():
 
     # Let's go!
     solver = Solver(cells)
-    solver.run2()
+    solver.run()
 
-    cells = solver.cells
     final_ans = solver.final_ans
 
     if DEBUG_MODE:
+        cells = solver.cells
         print4cells(cells)
         with open("debug.txt", "w") as f:
             for ans in final_ans:
                 line = " ".join(str(i+1) for i in ans)
                 f.write(line + "\n")
-        print("Te:{}".format(len(final_ans)))
     else:
-        # Output
         for ans in final_ans:
-            # print(ans)
-            # print(type(ans))
             line = " ".join(str(i+1) for i in ans)
             print(line)
 
