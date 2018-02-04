@@ -6,4 +6,6 @@
 * Pythonの実装です
     * 自分でやっても上手くいかなかったので、以下を参考
     * [Qiita記事](https://qiita.com/tsukammo/items/85ffbe907e89b051d715)
-    * ただ、Pythonだと遅いのか、制限時間で終わらない
+    * ただ、Pythonだと遅いので、けっこうぎりぎり
+        * C++の実装もつくった
+        

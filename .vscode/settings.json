@@ -1,4 +1,12 @@
 {
     "python.linting.pep8Enabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "files.associations": {
+        "iostream": "cpp",
+        "iosfwd": "cpp",
+        "iterator": "cpp",
+        "vector": "cpp",
+        "__tuple": "cpp",
+        "array": "cpp"
+    }
 }
