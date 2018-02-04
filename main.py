@@ -20,8 +20,9 @@ class Solver():
             while True:
                 x = p[0]
                 y = p[1]
-                self.final_ans.append([y, x])
-                self.cells[y][x] = self.cells[y][x] - 1
+                # self.final_ans.append([y, x])
+                # self.cells[y][x] = self.cells[y][x] - 1
+                print("{} {}".format(y+1, x+1))
 
                 next_p = None
                 for d in self.directions:
@@ -107,21 +108,21 @@ def main():
     solver = Solver(cells)
     solver.run()
 
-    final_ans = solver.final_ans
+    # final_ans = solver.final_ans
 
-    if DEBUG_MODE:
-        cells = solver.cells
-        print4cells(cells)
-        with open("debug.txt", "w") as f:
-            for ans in final_ans:
-                line = " ".join(str(i+1) for i in ans)
-                f.write(line + "\n")
-    else:
-        for ans in final_ans:
-            line = " ".join(str(i+1) for i in ans)
-            print(line)
+    # if DEBUG_MODE:
+    #     cells = solver.cells
+    #     print4cells(cells)
+    #     with open("debug.txt", "w") as f:
+    #         for ans in final_ans:
+    #             line = " ".join(str(i+1) for i in ans)
+    #             f.write(line + "\n")
+    # else:
+    #     for ans in final_ans:
+    #         line = " ".join(str(i+1) for i in ans)
+    #         print(line)
 
-    return 0
+    # return 0
 
 
 if __name__ == "__main__":
